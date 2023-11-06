@@ -1,0 +1,36 @@
+import { ReactNode, createContext, useContext, useState } from 'react';
+import { AnnotoriousManifoldInstance, createManifoldInstance } from './AnnotoriousManifoldInstance';
+import { Annotation, Annotator } from '@annotorious/core';
+
+interface AnnotoriousManifoldContextValue {
+
+  annotators: Annotator<any, unknown>[];
+
+  setAnnotators: React.Dispatch<React.SetStateAction<Annotator<any, unknown>[]>>;
+
+}
+
+export const AnnotoriousManifoldContext = createContext<AnnotoriousManifoldContextValue>({
+
+  annotators: undefined,
+
+  setAnnotators: undefined
+
+});
+
+export const AnnotoriousManifold = (props: { children: ReactNode }) => {
+
+  const [annotators, setAnnotators] = useState<Annotator<any, unknown>[]>([]);
+
+  return (
+    <AnnotoriousManifoldContext.Provider value={{ annotators, setAnnotators }}>
+      {props.children}
+    </AnnotoriousManifoldContext.Provider>
+  )
+
+}
+
+export const useAnnotoriousManifold = <I extends Annotation = Annotation, E extends unknown = Annotation>() => {
+  const { annotators } = useContext(AnnotoriousManifoldContext);
+  return createManifoldInstance(annotators) as AnnotoriousManifoldInstance<I, E>;
+}
