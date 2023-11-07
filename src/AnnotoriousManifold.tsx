@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useState } from 'react';
+import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { AnnotoriousManifoldInstance, createManifoldInstance } from './AnnotoriousManifoldInstance';
 import { Annotation, Annotator } from '@annotorious/core';
 
@@ -21,6 +21,16 @@ export const AnnotoriousManifoldContext = createContext<AnnotoriousManifoldConte
 export const AnnotoriousManifold = (props: { children: ReactNode }) => {
 
   const [annotators, setAnnotators] = useState<Annotator<any, unknown>[]>([]);
+
+  useEffect(() =>{
+    // ... destroy all annotators on unmount
+    return () => {
+      setAnnotators(annotators => {
+        annotators.forEach(a => a.destroy());
+        return [];
+      })
+    }
+  }, []);
 
   return (
     <AnnotoriousManifoldContext.Provider value={{ annotators, setAnnotators }}>

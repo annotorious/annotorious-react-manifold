@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { OpenSeadragonAnnotator, OpenSeadragonViewer } from '@annotorious/react';
-import { Annotorious } from '../src';
+import { Annotorious, useAnnotoriousManifold } from '../src';
 
 const ViewerTile = (props: { url: string }) => {
 
   return (
     <div className="viewer-tile">
-      <Annotorious>
+      <Annotorious source={props.url}>
         <OpenSeadragonAnnotator>
           <OpenSeadragonViewer
             className="osd-container"
@@ -30,6 +30,12 @@ const ViewerTile = (props: { url: string }) => {
 }
 
 export const App = () => {
+
+  const manifold = useAnnotoriousManifold();
+
+  useEffect(() => {
+    console.log('annotators', manifold.annotators);
+  }, [manifold.annotators]);
 
   return (
     <div className="container">

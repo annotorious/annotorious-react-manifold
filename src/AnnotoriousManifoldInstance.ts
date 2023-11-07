@@ -35,9 +35,22 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
   annotators: Annotator<I, E>[]
 ): AnnotoriousManifoldInstance<I, E> => {
 
+  const clearAnnotations = () =>
+    annotators.forEach(a => a.clearAnnotations());
+
+  const destroy = () =>
+    annotators.forEach(a => a.destroy());
+
+  const getAnnotationById = (id: string) =>
+    annotators.reduce((found, annotator) => 
+      found ? found : annotator.getAnnotationById(id), undefined as E | undefined);
+
   // @ts-ignore
   return {
-    annotators
+    annotators,
+    clearAnnotations,
+    destroy,
+    getAnnotationById
   }
 
 }
