@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext, useState } from 'react';
-import { Annotation, Annotator, StoreChangeEvent } from '@annotorious/core';
+import type { Annotation, Annotator, StoreChangeEvent } from '@annotorious/core';
 import { AnnotoriousManifoldInstance, createManifoldInstance } from './AnnotoriousManifoldInstance';
 
 interface AnnotoriousManifoldContextValue {

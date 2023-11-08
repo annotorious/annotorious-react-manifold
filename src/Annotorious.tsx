@@ -26,7 +26,7 @@ const AnnotoriousInstanceShim = <I extends Annotation = Annotation, E extends un
       return connectAnnotator(props.source, anno);
   }, [anno]);
 
-  return props.children;
+  return <>{props.children}</>;
 
 }
 

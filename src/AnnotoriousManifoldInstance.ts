@@ -3,7 +3,7 @@ import {
   AnnotationBody, 
   Annotator, 
   DrawingStyle, 
-  LifecycleEvents, 
+  LifecycleEvents,
   Origin
 } from '@annotorious/core';
 
