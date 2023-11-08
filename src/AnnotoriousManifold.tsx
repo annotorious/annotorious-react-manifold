@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext, useState } from 'react';
-import { Annotation, Annotator, Selection } from '@annotorious/core';
+import { Annotation, Annotator, StoreChangeEvent } from '@annotorious/core';
 import { AnnotoriousManifoldInstance, createManifoldInstance } from './AnnotoriousManifoldInstance';
 
 interface AnnotoriousManifoldContextValue {
@@ -14,9 +14,13 @@ interface AnnotoriousManifoldContextValue {
 
 }
 
-interface ManifoldSelection extends Selection {
+interface ManifoldSelection {
 
   source?: string;
+
+  selected: { annotation: Annotation, editable?: boolean }[],
+
+  pointerEvent?: PointerEvent;
 
 }
 
@@ -56,8 +60,33 @@ export const AnnotoriousManifold = (props: { children: ReactNode }) => {
     store.observe(onStoreChange);
 
     // Track selection
-    const unsubscribeSelection = selectionState.subscribe((selection: Selection) =>
-      setSelection({ source, ...selection }));
+    let selectionStoreObserver: (event: StoreChangeEvent<Annotation>) => void;
+
+    const unsubscribeSelection = selectionState.subscribe(({ selected, pointerEvent }) => {
+      if (selectionStoreObserver) 
+        store.unobserve(selectionStoreObserver);
+
+      const resolved = (selected || [])
+        .map(({ id, editable }) => ({ annotation: store.getAnnotation(id), editable }));
+
+      // Set the new selection
+      setSelection({ source, selected: resolved, pointerEvent });
+
+      // Track the state of the selected annotations in the store
+      selectionStoreObserver = event => {
+        const { updated } = event.changes;
+
+        setSelection(({ selected }) => ({
+          source,
+          selected: selected.map(({ annotation, editable }) => {
+            const next = updated.find(u => u.oldValue.id === annotation.id);
+            return next ? { annotation: next.newValue, editable } : { annotation, editable };
+          })
+        }));
+      }
+
+      store.observe(selectionStoreObserver, { annotations: selected.map(({ id }) => id) });
+    });
 
     return () => {
       // Remove annotator
