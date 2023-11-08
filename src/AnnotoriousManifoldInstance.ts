@@ -13,11 +13,11 @@ export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, 
 
   style: DrawingStyle | ((annotation: I) => DrawingStyle) | undefined;
 
-  addBody(body: AnnotationBody, origin: Origin): void;
+  addBody(body: AnnotationBody, origin?: Origin): void;
 
   clear(origin: Origin): void;
 
-  deleteAnnotation(id: string, origin: Origin): E | undefined;
+  deleteAnnotation(id: string, origin?: Origin): E | undefined;
 
   destroy(): void;
 
