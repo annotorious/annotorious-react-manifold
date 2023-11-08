@@ -48,8 +48,7 @@ export const AnnotoriousManifold = (props: { children: ReactNode }) => {
     const selectionState = anno.state.selection;
 
     // Add the annotations to the state
-    if (store.all().length > 0)
-      setAnnotations(m => new Map(m.entries()).set(source, store.all()));
+    setAnnotations(m => new Map(m.entries()).set(source, store.all()));
 
     const onStoreChange = () =>
       setAnnotations(m => new Map(m.entries()).set(source, store.all()));
