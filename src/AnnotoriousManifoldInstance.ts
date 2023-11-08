@@ -32,22 +32,22 @@ export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, 
 }
 
 export const createManifoldInstance = <I extends Annotation = Annotation, E extends unknown = Annotation>(
-  annotators: Annotator<I, E>[]
+  annotators: Map<string, Annotator<I, E>>
 ): AnnotoriousManifoldInstance<I, E> => {
 
   const clearAnnotations = () =>
-    annotators.forEach(a => a.clearAnnotations());
+    Array.from(annotators.values()).forEach(a => a.clearAnnotations());
 
   const destroy = () =>
-    annotators.forEach(a => a.destroy());
+    Array.from(annotators.values()).forEach(a => a.destroy());
 
   const getAnnotationById = (id: string) =>
-    annotators.reduce((found, annotator) => 
+    Array.from(annotators.values()).reduce((found, annotator) => 
       found ? found : annotator.getAnnotationById(id), undefined as E | undefined);
 
   // @ts-ignore
   return {
-    annotators,
+    annotators: [...annotators.values()],
     clearAnnotations,
     destroy,
     getAnnotationById

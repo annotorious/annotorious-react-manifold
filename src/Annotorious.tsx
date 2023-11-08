@@ -19,17 +19,11 @@ const AnnotoriousInstanceShim = <I extends Annotation = Annotation, E extends un
 
   const anno = useAnnotator<Annotator<I, E>>();
 
-  const { setAnnotators } = useContext(AnnotoriousManifoldContext);
+  const { connectAnnotator } = useContext(AnnotoriousManifoldContext);
 
   useEffect(() => {
-    if (anno) {
-      setAnnotators(annotators => 
-        annotators.indexOf(anno) >= 0 ? annotators : [...annotators, anno]);
-
-      return () => {
-        setAnnotators(annotators => annotators.filter(a => a !== anno));
-      }
-    }
+    if (anno)
+      return connectAnnotator(props.source, anno);
   }, [anno]);
 
   return props.children;
