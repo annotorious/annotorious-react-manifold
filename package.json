@@ -30,7 +30,7 @@
     "vite-tsconfig-paths": "^4.2.1"
   },
   "peerDependencies": {
-    "@annotorious/react": "^3.0.0-pre-alpha-54",
+    "@annotorious/react": "file:../annotorious/packages/annotorious-react",
     "react": "16.8.0 || >=17.x || >=18.x",
     "react-dom": "16.8.0 || >=17.x || >=18.x"
   },
