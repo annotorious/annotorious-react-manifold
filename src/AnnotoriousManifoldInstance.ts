@@ -11,7 +11,9 @@ export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, 
 
   annotators: Annotator<I, E>[];
 
-  style: DrawingStyle | ((annotation: I) => DrawingStyle) | undefined;
+  sources: string[];
+
+  // style: DrawingStyle | ((annotation: I) => DrawingStyle) | undefined;
 
   addBody(body: AnnotationBody, origin?: Origin): void;
 
@@ -47,7 +49,9 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
 
     { annotation: undefined, annotator: undefined };
 
+  /*********/
   /** API **/
+  /*********/
 
   const addBody = (body: AnnotationBody, origin = Origin.LOCAL) => {
     const { annotator } = find(body.annotation);
@@ -80,6 +84,7 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
   // @ts-ignore
   return {
     annotators: [...annotators.values()],
+    sources: [...annotators.keys()],
     addBody,
     clear,
     deleteAnnotation,
