@@ -14,11 +14,11 @@ interface AnnotoriousManifoldContextValue {
 
 }
 
-interface ManifoldSelection {
+interface ManifoldSelection<T extends Annotation = Annotation>{
 
   source?: string;
 
-  selected: { annotation: Annotation, editable?: boolean }[],
+  selected: { annotation: T, editable?: boolean }[],
 
   pointerEvent?: PointerEvent;
 
@@ -127,7 +127,7 @@ export const useAnnotations = <T extends Annotation>() => {
   return annotations as Map<string, T[]>;
 }
 
-export const useSelection = () => {
+export const useSelection = <T extends Annotation>() => {
   const { selection } = useContext(AnnotoriousManifoldContext);
-  return selection;
+  return selection as ManifoldSelection<T>;
 }
