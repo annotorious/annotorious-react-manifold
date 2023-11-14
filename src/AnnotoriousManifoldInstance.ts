@@ -2,7 +2,6 @@ import {
   Annotation, 
   AnnotationBody, 
   Annotator, 
-  DrawingStyle, 
   LifecycleEvents,
   Origin
 } from '@annotorious/core';
