@@ -4,7 +4,7 @@ import type {
   AnnotationBody, 
   Annotator, 
   LifecycleEvents
-} from '@annotorious/core';
+} from '@annotorious/core/src';
 
 export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, E extends unknown = Annotation> {
 
