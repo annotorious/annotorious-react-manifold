@@ -1,6 +1,6 @@
 {
   "name": "@annotorious/react-manifold",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A utility to manage multiple parallel Annotorious instances more efficiently",
   "author": "Rainer Simon",
   "license": "BSD-3-Clause",
@@ -17,8 +17,17 @@
     "start": "vite",
     "build": "tsc && vite build"
   },
-  "main": "src/index.ts",
-  "sideEffects": false,
+  "module": "./dist/annotorious-react-manifold.es.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/annotorious-react-manifold.es.js"
+    }
+  },
   "devDependencies": {
     "@types/react": "^18.2.35",
     "@types/react-dom": "^18.2.14",
@@ -36,5 +45,6 @@
   },
   "dependencies": {
     "@annotorious/core": "^3.0.0-pre-alpha-56"
-  }
+  },
+  "sideEffects": false
 }
