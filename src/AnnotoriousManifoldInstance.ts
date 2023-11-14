@@ -1,9 +1,9 @@
-import { 
+import { Origin } from '@annotorious/react';
+import type { 
   Annotation, 
   AnnotationBody, 
   Annotator, 
-  LifecycleEvents,
-  Origin
+  LifecycleEvents
 } from '@annotorious/core';
 
 export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, E extends unknown = Annotation> {
