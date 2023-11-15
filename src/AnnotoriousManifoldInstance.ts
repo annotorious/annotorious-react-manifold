@@ -21,9 +21,13 @@ export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, 
 
   destroy(): void;
 
+  findAnnotator(annotationId: string): Annotator<I, E> | undefined;
+
   getAnnotation(id: string): I | undefined;
 
   getAnnotations(): I[];
+  
+  setSelected(annotationId: string): void;
 
   updateAnnotation(arg1: string | I, arg2?: I | Origin, arg3?: Origin): void;
 
@@ -76,6 +80,11 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
   const destroy = () =>
     Array.from(annotators.values()).forEach(a => a.destroy());
 
+  const findAnnotator = (annotationId: string) => {
+    const { annotator } = find(annotationId);
+    return annotator;
+  }
+
   const getAnnotation = (id: string) => 
     find(id).annotation;
 
@@ -91,6 +100,42 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
       annotator.state.store.updateAnnotation(arg1, arg2, arg3);
   }
 
+  const setSelected = (id: string) => {
+    // Note: keeping this for later - but needs handling in the 
+    // context provider, because we need to mute selection events!
+    /*
+    if (Array.isArray(idOrIds)) {
+      const resolved = idOrIds.map(find).filter(t => t.annotator);
+
+      const groupedByAnnotator = resolved.reduce((grouped, { annotator, annotation }) => {
+        const existing = grouped.find(t => t.annotator === annotator);
+        if (existing) {
+          // Append this annotation
+          return grouped.map(t => t.annotator === existing.annotator ? 
+            { 
+              annotator, 
+              annotations: [...t.annotations, annotation ] 
+            } : t);
+        } else {
+          // New entry
+          return [...grouped, {
+            annotator,
+            annotations: [ annotation ]
+          }];
+        }  
+      }, [] as { annotator: Annotator<I, E>, annotations: I[] }[]);
+
+      groupedByAnnotator.forEach(({ annotator, annotations }) => {
+        
+      })
+    } else { 
+    */
+      const { annotator } = find(id);
+      if (annotator)
+        annotator.setSelected(id);
+    // }
+  }
+
   return {
     annotators: [...annotators.values()],
     sources: [...annotators.keys()],
@@ -99,8 +144,10 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
     deleteAnnotation,
     deleteBody,
     destroy,
+    findAnnotator,
     getAnnotation,
     getAnnotations,
+    setSelected,
     updateAnnotation
   }
 
