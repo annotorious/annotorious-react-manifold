@@ -83,7 +83,7 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
     Array.from(annotators.values()).reduce((all, annotator) =>
       [...all, ...annotator.getAnnotations()], [] as E[]);
 
-  const updateAnnotation = (arg1: string | I, arg2: I | Origin, arg3: Origin) => {
+  const updateAnnotation = (arg1: string | I, arg2: I | Origin = Origin.LOCAL, arg3: Origin = Origin.LOCAL) => {
     const oldId: string = typeof arg1 === 'string' ? arg1 : arg1.id;
     const { annotator } = find(oldId);
     if (annotator)
