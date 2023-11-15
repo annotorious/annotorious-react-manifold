@@ -5,7 +5,7 @@ import type {
   Annotator
 } from '@annotorious/react';
 
-export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, E extends unknown = Annotation> {
+export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, E extends { id: string } = Annotation> {
 
   annotators: Annotator<I, E>[];
 
@@ -25,11 +25,11 @@ export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, 
 
   getAnnotations(): E[];
 
-  updateAnnotation(arg1: string | I, arg2?: I | Origin, arg3?: Origin): void;
+  updateAnnotation(annotation: E): void;
 
 }
 
-export const createManifoldInstance = <I extends Annotation = Annotation, E extends unknown = Annotation>(
+export const createManifoldInstance = <I extends Annotation = Annotation, E extends { id: string } = Annotation>(
   annotators: Map<string, Annotator<I, E>>
 ): AnnotoriousManifoldInstance<I, E> => {
 
@@ -40,7 +40,7 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
 
       const annotation = annotator.getAnnotationById(annotationId);
       if (annotation) 
-        return { annotation, annotator };
+        return { annotation, annotator };
     }, undefined as { annotation: E, annotator: Annotator<I, E> } | undefined ) || 
 
     { annotation: undefined, annotator: undefined };
@@ -83,11 +83,10 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
     Array.from(annotators.values()).reduce((all, annotator) =>
       [...all, ...annotator.getAnnotations()], [] as E[]);
 
-  const updateAnnotation = (arg1: string | I, arg2?: I | Origin, arg3?: Origin) => {
-    const oldId: string = typeof arg1 === 'string' ? arg1 : arg1.id;
-    const { annotator } = find(oldId);
+  const updateAnnotation = (annotation: E) => {
+    const { annotator } = find(annotation.id);
     if (annotator)
-      annotator.state.store.updateAnnotation(arg1, arg2, arg3);
+      annotator.updateAnnotation(annotation)
   }
 
   return {

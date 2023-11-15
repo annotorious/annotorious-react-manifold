@@ -1,17 +1,17 @@
-import { ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
 import type { Annotation, Annotator } from '@annotorious/react';
 import type { StoreChangeEvent } from '@annotorious/react';
 import { AnnotoriousManifoldInstance, createManifoldInstance } from './AnnotoriousManifoldInstance';
 
 interface AnnotoriousManifoldContextValue {
 
-  annotators: Map<string, Annotator<any, unknown>>;
+  annotators: Map<string, Annotator<any, { id: string }>>;
 
   annotations: Map<string, Annotation[]>;
 
   selection: ManifoldSelection;
 
-  connectAnnotator(source: string, anno: Annotator<any, unknown>): () => void;
+  connectAnnotator(source: string, anno: Annotator<any, { id: string }>): () => void;
 
 }
 
@@ -30,7 +30,7 @@ export const AnnotoriousManifoldContext = createContext<AnnotoriousManifoldConte
 
 export const AnnotoriousManifold = (props: { children: ReactNode }) => {
 
-  const [annotators, setAnnotators] = useState<Map<string, Annotator<any, unknown>>>(new Map());
+  const [annotators, setAnnotators] = useState<Map<string, Annotator<any, { id: string }>>>(new Map());
 
   const [annotations, setAnnotations] = useState<Map<string, Annotation[]>>(new Map());
 
@@ -40,7 +40,7 @@ export const AnnotoriousManifold = (props: { children: ReactNode }) => {
   // To prevent selection state updates when de-selecting other annotators
   const muteSelectionEvents = useRef<boolean>(false);
 
-  const connectAnnotator = (source: string, anno: Annotator<any, unknown>) => {
+  const connectAnnotator = (source: string, anno: Annotator<any, { id: string }>) => {
     // Add the annotator to the state
     setAnnotators(m => new Map(m.entries()).set(source, anno))
 
@@ -125,7 +125,7 @@ export const AnnotoriousManifold = (props: { children: ReactNode }) => {
 
 }
 
-export const useAnnotoriousManifold = <I extends Annotation = Annotation, E extends unknown = Annotation>() => {
+export const useAnnotoriousManifold = <I extends Annotation = Annotation, E extends { id: string } = Annotation>() => {
   const { annotators } = useContext(AnnotoriousManifoldContext);
   return createManifoldInstance(annotators) as AnnotoriousManifoldInstance<I, E>;
 }

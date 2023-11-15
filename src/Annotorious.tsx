@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useEffect } from 'react';
+import React, { ReactNode, useContext, useEffect } from 'react';
 import { Annotation, Annotator, useAnnotator } from '@annotorious/react';
 import { Annotorious as AnnotoriousInstance } from '@annotorious/react';
 import { AnnotoriousManifoldContext } from './AnnotoriousManifold';
@@ -15,7 +15,7 @@ interface AnnotoriousProps {
  * Consumes the standard Annotorious context, and passes the Annotator
  * upwards to the manifold.
  */
-const AnnotoriousInstanceShim = <I extends Annotation = Annotation, E extends unknown = Annotation>(props: AnnotoriousProps) => {
+const AnnotoriousInstanceShim = <I extends Annotation = Annotation, E extends { id: string } = Annotation>(props: AnnotoriousProps) => {
 
   const anno = useAnnotator<Annotator<I, E>>();
 
