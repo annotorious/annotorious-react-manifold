@@ -23,6 +23,8 @@ export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, 
 
   findAnnotator(annotationId: string): Annotator<I, E> | undefined;
 
+  findSource(annotationId: string): string | undefined;
+
   getAnnotation(id: string): I | undefined;
 
   getAnnotations(): I[];
@@ -37,17 +39,17 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
   annotators: Map<string, Annotator<I, E>>
 ): AnnotoriousManifoldInstance<I, E> => {
 
-  const find = (annotationId: string): { annotation?: I, annotator?: Annotator<I, E> } =>
-    Array.from(annotators.values()).reduce((found, annotator) => {
+  const find = (annotationId: string): { annotation?: I, source?: string, annotator?: Annotator<I, E> } =>
+    Array.from(annotators.entries()).reduce((found, [source, annotator]) => {
       if (found)
         return found;
 
       const annotation = annotator.state.store.getAnnotation(annotationId);
       if (annotation) 
-        return { annotation, annotator };
+        return { annotation, annotator, source };
     }, undefined as { annotation: I, annotator: Annotator<I, E> } | undefined ) || 
 
-    { annotation: undefined, annotator: undefined };
+    { annotation: undefined, annotator: undefined, source: undefined };
 
   /*********/
   /** API **/
@@ -83,6 +85,11 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
   const findAnnotator = (annotationId: string) => {
     const { annotator } = find(annotationId);
     return annotator;
+  }
+
+  const findSource = (annotationId: string) => {
+    const { source } = find(annotationId);
+    return source;
   }
 
   const getAnnotation = (id: string) => 
@@ -145,6 +152,7 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
     deleteBody,
     destroy,
     findAnnotator,
+    findSource,
     getAnnotation,
     getAnnotations,
     setSelected,
