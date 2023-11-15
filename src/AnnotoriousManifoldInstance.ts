@@ -15,17 +15,17 @@ export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, 
 
   clear(origin: Origin): void;
 
-  deleteAnnotation(id: string, origin?: Origin): E | undefined;
+  deleteAnnotation(id: string, origin?: Origin): I | undefined;
 
   deleteBody(body: AnnotationBody, origin?: Origin): void;
 
   destroy(): void;
 
-  getAnnotation(id: string): E | undefined;
+  getAnnotation(id: string): I | undefined;
 
-  getAnnotations(): E[];
+  getAnnotations(): I[];
 
-  updateAnnotation(annotation: E): void;
+  updateAnnotation(arg1: string | I, arg2?: I | Origin, arg3?: Origin): void;
 
 }
 
@@ -33,15 +33,15 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
   annotators: Map<string, Annotator<I, E>>
 ): AnnotoriousManifoldInstance<I, E> => {
 
-  const find = (annotationId: string): { annotation?: E, annotator?: Annotator<I, E> } =>
+  const find = (annotationId: string): { annotation?: I, annotator?: Annotator<I, E> } =>
     Array.from(annotators.values()).reduce((found, annotator) => {
       if (found)
         return found;
 
-      const annotation = annotator.getAnnotationById(annotationId);
+      const annotation = annotator.state.store.getAnnotation(annotationId);
       if (annotation) 
         return { annotation, annotator };
-    }, undefined as { annotation: E, annotator: Annotator<I, E> } | undefined ) || 
+    }, undefined as { annotation: I, annotator: Annotator<I, E> } | undefined ) || 
 
     { annotation: undefined, annotator: undefined };
 
@@ -81,12 +81,14 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
 
   const getAnnotations = () => 
     Array.from(annotators.values()).reduce((all, annotator) =>
-      [...all, ...annotator.getAnnotations()], [] as E[]);
+      [...all, ...annotator.state.store.all()], [] as I[]);
 
-  const updateAnnotation = (annotation: E) => {
-    const { annotator } = find(annotation.id);
+  const updateAnnotation = (arg1: string | I, arg2?: I | Origin, arg3?: Origin) => {
+    const oldId: string = typeof arg1 === 'string' ? arg1 : arg1.id;
+
+    const { annotator } = find(oldId);
     if (annotator)
-      annotator.updateAnnotation(annotation)
+      annotator.state.store.updateAnnotation(arg1, arg2, arg3);
   }
 
   return {
