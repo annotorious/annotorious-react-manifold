@@ -1,4 +1,4 @@
-import { Annotation, Annotator } from '@annotorious/core';
+import { Annotation, Annotator } from '@annotorious/core/src/model';
 
 export const synchronizeInstances = <I extends Annotation = Annotation, E extends unknown = Annotation>(
   instances: Annotator<I, E>[]

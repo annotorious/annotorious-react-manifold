@@ -2,9 +2,8 @@ import { Origin } from '@annotorious/react';
 import type { 
   Annotation, 
   AnnotationBody, 
-  Annotator, 
-  LifecycleEvents
-} from '@annotorious/core/src';
+  Annotator
+} from '@annotorious/react';
 
 export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, E extends unknown = Annotation> {
 
@@ -12,23 +11,21 @@ export interface AnnotoriousManifoldInstance<I extends Annotation = Annotation, 
 
   sources: string[];
 
-  // style: DrawingStyle | ((annotation: I) => DrawingStyle) | undefined;
-
   addBody(body: AnnotationBody, origin?: Origin): void;
 
   clear(origin: Origin): void;
 
   deleteAnnotation(id: string, origin?: Origin): E | undefined;
 
+  deleteBody(body: AnnotationBody, origin?: Origin): void;
+
   destroy(): void;
 
-  getAnnotationById(id: string): E | undefined;
+  getAnnotation(id: string): E | undefined;
 
   getAnnotations(): E[];
-  
-  on<T extends keyof LifecycleEvents<E>>(event: T, callback: LifecycleEvents<E>[T]): void;
 
-  off<T extends keyof LifecycleEvents<E>>(event: T, callback: LifecycleEvents<E>[T]): void;
+  updateAnnotation(arg1: string | I, arg2: I | Origin, arg3: Origin): void;
 
 }
 
@@ -70,26 +67,40 @@ export const createManifoldInstance = <I extends Annotation = Annotation, E exte
     }
   }
 
+  const deleteBody = (body: AnnotationBody, origin = Origin.LOCAL) => {
+    const { annotator } = find(body.annotation);
+    if (annotator)
+      annotator.state.store.deleteBody(body, origin);
+  }
+
   const destroy = () =>
     Array.from(annotators.values()).forEach(a => a.destroy());
 
-  const getAnnotationById = (id: string) => 
+  const getAnnotation = (id: string) => 
     find(id).annotation;
 
   const getAnnotations = () => 
     Array.from(annotators.values()).reduce((all, annotator) =>
-      [...all, ...annotator.getAnnotations()], [] as E[])
+      [...all, ...annotator.getAnnotations()], [] as E[]);
 
-  // @ts-ignore
+  const updateAnnotation = (arg1: string | I, arg2: I | Origin, arg3: Origin) => {
+    const oldId: string = typeof arg1 === 'string' ? arg1 : arg1.id;
+    const { annotator } = find(oldId);
+    if (annotator)
+      annotator.state.store.updateAnnotation(arg1, arg2, arg3);
+  }
+
   return {
     annotators: [...annotators.values()],
     sources: [...annotators.keys()],
     addBody,
     clear,
     deleteAnnotation,
+    deleteBody,
     destroy,
-    getAnnotationById,
-    getAnnotations
+    getAnnotation,
+    getAnnotations,
+    updateAnnotation
   }
 
 }
