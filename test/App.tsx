@@ -1,8 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { OpenSeadragonAnnotator, OpenSeadragonViewer } from '@annotorious/react';
 import { Annotorious, useAnnotoriousManifold } from '../src';
 
 const ViewerTile = (props: { url: string }) => {
+
+  const options = useMemo(() => ({
+    prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@3.1/build/openseadragon/images/', 
+    tileSources: {
+      type: 'image',
+      url: props.url
+    },
+    gestureSettingsMouse: {
+      clickToZoom: false
+    },
+    showRotationControl: true,
+    crossOriginPolicy: 'Anonymous'
+  }), []);
 
   return (
     <div className="viewer-tile">
@@ -10,18 +23,7 @@ const ViewerTile = (props: { url: string }) => {
         <OpenSeadragonAnnotator>
           <OpenSeadragonViewer
             className="osd-container"
-            options={{
-              prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@3.1/build/openseadragon/images/', 
-              tileSources: {
-                type: 'image',
-                url: props.url
-              },
-              gestureSettingsMouse: {
-                clickToZoom: false
-              },
-              showRotationControl: true,
-              crossOriginPolicy: 'Anonymous'
-            }} />
+            options={options} />
         </OpenSeadragonAnnotator>
       </Annotorious>
     </div>
