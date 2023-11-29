@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect } from 'react';
+import { ReactNode, useContext, useEffect } from 'react';
 import { Annotation, Annotator, useAnnotator } from '@annotorious/react';
 import { Annotorious as AnnotoriousInstance } from '@annotorious/react';
 import { AnnotoriousManifoldContext } from './AnnotoriousManifold';
@@ -7,7 +7,7 @@ interface AnnotoriousProps {
 
   children: ReactNode;
 
-  source: string;
+  id: string;
 
 }
 
@@ -23,7 +23,7 @@ const AnnotoriousInstanceShim = <I extends Annotation = Annotation, E extends { 
 
   useEffect(() => {
     if (anno) {
-      return connectAnnotator(props.source, anno);
+      return connectAnnotator(props.id, anno);
     }
   }, [anno]);
 
@@ -40,7 +40,7 @@ export const Annotorious = (props: AnnotoriousProps) => {
 
   return (
     <AnnotoriousInstance>
-      <AnnotoriousInstanceShim source={props.source}>
+      <AnnotoriousInstanceShim id={props.id}>
         {props.children}
       </AnnotoriousInstanceShim>
     </AnnotoriousInstance>

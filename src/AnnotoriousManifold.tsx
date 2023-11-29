@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
+import { ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
 import type { Annotation, Annotator } from '@annotorious/react';
 import type { StoreChangeEvent } from '@annotorious/react';
 import { AnnotoriousManifoldInstance, createManifoldInstance } from './AnnotoriousManifoldInstance';
@@ -17,7 +17,7 @@ interface AnnotoriousManifoldContextValue {
 
 interface ManifoldSelection<T extends Annotation = Annotation> {
 
-  source?: string;
+  id?: string;
 
   selected: { annotation: T, editable?: boolean }[],
 
@@ -40,18 +40,18 @@ export const AnnotoriousManifold = (props: { children: ReactNode }) => {
   // To prevent selection state updates when de-selecting other annotators
   const muteSelectionEvents = useRef<boolean>(false);
 
-  const connectAnnotator = (source: string, anno: Annotator<any, { id: string }>) => {
+  const connectAnnotator = (id: string, anno: Annotator<any, { id: string }>) => {
     // Add the annotator to the state
-    setAnnotators(m => new Map(m.entries()).set(source, anno))
+    setAnnotators(m => new Map(m.entries()).set(id, anno))
 
     const { store } = anno.state;
     const selectionState = anno.state.selection;
 
     // Add the annotations to the state
-    setAnnotations(m => new Map(m.entries()).set(source, store.all()));
+    setAnnotations(m => new Map(m.entries()).set(id, store.all()));
 
     const onStoreChange = () =>
-      setAnnotations(m => new Map(m.entries()).set(source, store.all()));
+      setAnnotations(m => new Map(m.entries()).set(id, store.all()));
 
     store.observe(onStoreChange);
 
@@ -67,14 +67,14 @@ export const AnnotoriousManifold = (props: { children: ReactNode }) => {
 
       // Set the new selection
       if (!muteSelectionEvents.current)
-        setSelection({ source, selected: resolved, pointerEvent });
+        setSelection({ id, selected: resolved, pointerEvent });
 
       // Track the state of the selected annotations in the store
       selectionStoreObserver = event => {
         const { updated } = event.changes;
 
-        setSelection(({ source, selected }) => ({
-          source,
+        setSelection(({ id, selected }) => ({
+          id,
           selected: selected.map(({ annotation, editable }) => {
             const next = updated.find(u => u.oldValue.id === annotation.id);
             return next ? { annotation: next.newValue, editable } : { annotation, editable };
@@ -88,10 +88,10 @@ export const AnnotoriousManifold = (props: { children: ReactNode }) => {
 
     return () => {
       // Remove annotator
-      setAnnotators(m => new Map(Array.from(m.entries()).filter(([key, _]) => key !== source)));
+      setAnnotators(m => new Map(Array.from(m.entries()).filter(([key, _]) => key !== id)));
 
       // Remove & untrack annotations
-      setAnnotations(m => new Map(Array.from(m.entries()).filter(([key, _]) => key !== source)));
+      setAnnotations(m => new Map(Array.from(m.entries()).filter(([key, _]) => key !== id)));
       store.unobserve(onStoreChange);
 
       // Un-track selection
@@ -100,11 +100,11 @@ export const AnnotoriousManifold = (props: { children: ReactNode }) => {
   }
 
   useEffect(() => {
-    if (selection.source) {
+    if (selection.id) {
       muteSelectionEvents.current = true;
 
       Array.from(annotators.entries()).forEach(([source, anno]) => {
-        if (source !== selection.source)
+        if (source !== selection.id)
           anno.setSelected();
       });
 

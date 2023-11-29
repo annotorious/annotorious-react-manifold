@@ -19,7 +19,7 @@ const ViewerTile = (props: { url: string }) => {
 
   return (
     <div className="viewer-tile">
-      <Annotorious source={props.url}>
+      <Annotorious id={props.url}>
         <OpenSeadragonAnnotator>
           <OpenSeadragonViewer
             className="osd-container"
