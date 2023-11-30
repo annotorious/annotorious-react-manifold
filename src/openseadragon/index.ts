@@ -1,1 +1,2 @@
-export * from './OSDViewerManifold';
+export * from './OpenSeadragonViewer';
+export * from './OpenSeadragonViewerManifold';
