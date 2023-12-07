@@ -130,6 +130,11 @@ export const useAnnotoriousManifold = <I extends Annotation = Annotation, E exte
   return createManifoldInstance(annotators) as AnnotoriousManifoldInstance<I, E>;
 }
 
+export const useAnnotator = <I extends Annotation = Annotation, E extends { id: string } = Annotation>(id: string) => {
+  const { annotators } = useContext(AnnotoriousManifoldContext);
+  return annotators.get(id) as Annotator<I, E>;
+}
+
 export const useAnnotations = <T extends Annotation>() => {
   const { annotations } = useContext(AnnotoriousManifoldContext);
   return annotations as Map<string, T[]>;
