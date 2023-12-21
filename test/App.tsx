@@ -2,6 +2,8 @@ import React, { useEffect, useMemo } from 'react';
 import { OpenSeadragonAnnotator, OpenSeadragonViewer } from '@annotorious/react';
 import { Annotorious, useAnnotoriousManifold } from '../src';
 
+import '@annotorious/react/annotorious-react.css';
+
 const ViewerTile = (props: { url: string }) => {
 
   const options = useMemo(() => ({
@@ -20,7 +22,11 @@ const ViewerTile = (props: { url: string }) => {
   return (
     <div className="viewer-tile">
       <Annotorious id={props.url}>
-        <OpenSeadragonAnnotator>
+        <OpenSeadragonAnnotator 
+          drawingMode="click"
+          tool="rectangle"
+          drawingEnabled={true}>
+
           <OpenSeadragonViewer
             className="osd-container"
             options={options} />
