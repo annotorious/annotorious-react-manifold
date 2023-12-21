@@ -1,5 +1,5 @@
 import { Origin } from '@annotorious/react';
-import type { 
+import type {
   Annotation, 
   AnnotationBody, 
   Annotator
