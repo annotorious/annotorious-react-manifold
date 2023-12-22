@@ -21,7 +21,7 @@ const AnnotoriousInstanceShim = <I extends Annotation = Annotation, E extends { 
 
   const { connectAnnotator } = useContext(AnnotoriousManifoldContext);
 
-  useEffect(() => {
+  useEffect(() => {    
     if (anno) {
       return connectAnnotator(props.id, anno);
     }
