@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { OpenSeadragonAnnotator, OpenSeadragonViewer } from '@annotorious/react';
-import { Annotorious, useAnnotoriousManifold } from '../src';
+import { Annotorious } from '../src';
 
 import '@annotorious/react/annotorious-react.css';
 
-const ViewerTile = (props: { url: string }) => {
+const ViewerTile = (props: { id: string, url: string }) => {
 
   const options = useMemo(() => ({
     prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@3.1/build/openseadragon/images/', 
@@ -21,7 +21,7 @@ const ViewerTile = (props: { url: string }) => {
 
   return (
     <div className="viewer-tile">
-      <Annotorious id={props.url}>
+      <Annotorious id={props.id}>
         <OpenSeadragonAnnotator 
           drawingMode="click"
           tool="rectangle"
@@ -39,18 +39,12 @@ const ViewerTile = (props: { url: string }) => {
 
 export const App = () => {
 
-  const manifold = useAnnotoriousManifold();
-
-  useEffect(() => {
-    console.log('annotators', manifold.annotators);
-  }, [manifold.annotators]);
-
   return (
     <div className="container">
-      <ViewerTile url="33054-000002-0001.jpg" />
-      <ViewerTile url="33054-000002-0001.jpg" />
-      <ViewerTile url="33054-000002-0001.jpg" />
-      <ViewerTile url="33054-000002-0001.jpg" />
+      <ViewerTile id="01" url="33054-000002-0001.jpg" />
+      <ViewerTile id="02" url="33054-000002-0001.jpg" />
+      <ViewerTile id="03" url="33054-000002-0001.jpg" />
+      <ViewerTile id="04" url="33054-000002-0001.jpg" />
     </div>
   )
 
